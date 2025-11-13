@@ -1,0 +1,32 @@
+fullnameOverride: "omi-backend"
+
+replicaCount: 1
+
+image:
+  pullPolicy: Always
+
+registrySecret:
+  - yandex-registry
+
+ingress:
+  enabled: false
+
+env:
+  - name: SENTRY_DSN
+    value: "https://d7a7e660a2ab4d1b95fdaee802629064@o4504374893281280.ingest.sentry.io/4504374900752384"
+  - name: APP_ENV
+    value: "dev"
+  - name: SENTRY_ENV
+    value: "production"
+#  - name: DEBUG
+#    value: "false"
+  - name: DB_NAME
+    value: "omi"
+
+resources:
+   limits:
+     cpu: 4000m
+     memory: 4096Mi
+   requests:
+     cpu: 200m
+     memory: 256Mi

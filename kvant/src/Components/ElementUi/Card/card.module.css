@@ -1,0 +1,106 @@
+.card {
+  position: relative;
+  border-radius: 20px;
+  padding: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.defaultBorder {
+  border: 3px solid #DDDDDD;
+}
+
+.defaultBorder.selected {
+  border-color: #3A7F88;
+}
+
+.primaryBorder {
+  border: 3px solid #3A7F88;
+}
+
+/* при выборе */
+.primaryBorder.selected {
+  background-color: #3A7F88;
+}
+
+.primaryBorder.selected .title,
+.primaryBorder.selected .description {
+  color: white;
+}
+
+/* при наведении */
+.primaryBorder.hovered {
+  background-color: #3A7F88;
+}
+
+.defaultBorder.hovered {
+  border-color: #3A7F88;
+}
+
+.primaryBorder.hovered .title,
+.primaryBorder.hovered .description {
+  color: white;
+}
+
+/* Изображение при наведении и выборе */
+.primaryBorder.hovered .image,
+.primaryBorder.selected .image {
+  filter: brightness(0) invert(1); /* инверсия цвета если нет selectedImage */
+}
+
+.imageContainer {
+  /* width: 100%; */
+  max-height: 130px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.content {
+  padding: 0 8px;
+}
+
+.title {
+  margin: 0 0 0 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #3A7F88;
+  max-width: 170px;
+}
+
+.secondaryTitle {
+  margin: 0 0 0 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #000000;
+  max-width: 170px;
+}
+
+.description {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #3A7F88;
+  line-height: 1.4;
+}
+
+.secondaryDescription {
+    font-weight: 400;
+    font-size: 0.9rem;
+    color: #000000;
+    line-height: 1.4;
+}

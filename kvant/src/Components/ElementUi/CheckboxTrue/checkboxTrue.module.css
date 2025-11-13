@@ -1,0 +1,39 @@
+.label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  margin: 4px 0;
+}
+
+.hiddenInput {
+  position: absolute;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.customCheckbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background-color: #DDDDDD;
+  border: none;
+  transition: background-color 0.2s ease;
+  display: inline-block;
+}
+
+.customCheckbox.checked {
+  background-color: #3A7F88;
+  border: none;
+}
+
+.labelText {
+  margin-left: 8px;
+  font-family: 'Montserrat';
+  font-weight: 600;
+  color: black;
+}
+
+.label:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

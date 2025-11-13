@@ -1,0 +1,5 @@
+%syntax-version=1.0.0
+%project=omi
+
+001_first 2023-04-29T09:39:40Z Sergey Syrov <ss@fronttier.ru> # first test
+002_questionnaire_forms 2025-10-22T13:43:39Z Codex Agent <dev@kvant.local> # questionnaire form storage

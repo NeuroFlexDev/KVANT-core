@@ -1,0 +1,108 @@
+# Docker Compose для продакшена
+
+services:
+  # PostgreSQL база данных для продакшена
+  postgres:
+    image: postgres:13-alpine
+    container_name: kvant-prod-postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
+    networks:
+      - kvant-prod-network
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Бэкенд для продакшена
+  backend:
+    build:
+      context: ./omi-dev
+      dockerfile: Dockerfile
+      target: production
+    container_name: kvant-prod-backend
+    environment:
+      - APP_ENV=prod
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_SSLMODE=disable
+      - DEBUG=false
+      - SECRET_KEY=${SECRET_KEY}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - SENTRY_ENV=production
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - kvant-prod-network
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Фронтенд для продакшена
+  frontend:
+    build:
+      context: ./kvant
+      dockerfile: Dockerfile
+      target: production
+    container_name: kvant-prod-frontend
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    networks:
+      - kvant-prod-network
+    restart: always
+
+  # Nginx прокси для продакшена
+  nginx:
+    image: nginx:alpine
+    container_name: kvant-prod-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - kvant-prod-network
+    restart: always
+
+  # Redis для кэширования в продакшене
+  redis:
+    image: redis:alpine
+    container_name: kvant-prod-redis
+    volumes:
+      - redis_prod_data:/data
+    networks:
+      - kvant-prod-network
+    restart: always
+
+volumes:
+  postgres_prod_data:
+    driver: local
+  redis_prod_data:
+    driver: local
+  nginx_logs:
+    driver: local
+
+networks:
+  kvant-prod-network:
+    driver: bridge

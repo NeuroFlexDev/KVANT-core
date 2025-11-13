@@ -1,0 +1,134 @@
+.container {
+    text-align: left;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding: 20px 2rem 40px;
+    box-sizing: border-box;
+}
+
+.cardsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 24px;
+}
+
+.inputContainer { 
+    width: 100%;
+    padding-bottom: 30px;
+}
+
+.addressBlock {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.addressLabelRow {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.addressCoordinates {
+    font-size: 13px;
+    color: #475569;
+}
+
+.addressInputRow {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.addressInputField {
+    flex: 1;
+    min-width: 260px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    font-size: 16px;
+    font-family: 'Montserrat';
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.addressInputField:focus {
+    border-color: #3A7F88;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(58, 127, 136, 0.15);
+}
+
+.addressStatus {
+    margin: 0;
+    font-size: 14px;
+    color: #475569;
+}
+
+.addressStatusSuccess {
+    color: #15803d;
+}
+
+.addressStatusError {
+    color: #b91c1c;
+}
+
+.addressResults {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 260px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.addressResults::-webkit-scrollbar {
+    width: 6px;
+}
+
+.addressResults::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(58, 127, 136, 0.35);
+}
+
+.addressResultButton {
+    text-align: left;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    padding: 12px 16px;
+    background: #ffffff;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    font-family: 'Montserrat';
+}
+
+.addressResultButton:hover {
+    border-color: #3A7F88;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.12);
+}
+
+.addressResultCoords {
+    display: block;
+    font-size: 13px;
+    color: #475569;
+    margin-top: 4px;
+}
+
+@media (max-width: 725px) {
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        gap: 30px;
+        padding: 20px 1.5rem 32px;
+        margin: 0 auto;
+    }
+    .cardsContainer {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,127 @@
+# Docker Compose file для Kvant Core
+
+services:
+  # PostgreSQL база данных
+  postgres:
+    image: postgres:13-alpine
+    container_name: kvant-postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME:-kvant_dev}
+      POSTGRES_USER: ${DB_USER:-kvant_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-kvant_password}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
+    networks:
+      - kvant-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-kvant_user} -d ${DB_NAME:-kvant_dev}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Бэкенд (FastAPI)
+  backend:
+    build:
+      context: ./omi-dev
+      dockerfile: Dockerfile
+      target: ${BUILD_TARGET:-development}
+    container_name: kvant-backend
+    environment:
+      - APP_ENV=${APP_ENV:-dev}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME:-kvant_dev}
+      - DB_USER=${DB_USER:-kvant_user}
+      - DB_PASSWORD=${DB_PASSWORD:-kvant_password}
+      - DB_SSLMODE=disable
+      - DEBUG=${DEBUG:-true}
+      - SECRET_KEY=${SECRET_KEY:-dev-secret-key-change-in-production}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      # Для development - монтируем исходный код
+      - ./omi-dev/src:/app/src:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - kvant-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Фронтенд (React + Vite)
+  frontend:
+    build:
+      context: ./kvant
+      dockerfile: Dockerfile
+      target: ${BUILD_TARGET:-development}
+    container_name: kvant-frontend
+    environment:
+      - VITE_API_URL=http://backend:8000
+      - NODE_ENV=${NODE_ENV:-development}
+    ports:
+      - "${FRONTEND_PORT:-3000}:5173"
+    volumes:
+      # Для development - монтируем исходный код
+      - ./kvant/src:/app/src:ro
+      - ./kvant/public:/app/public:ro
+      - ./kvant/index.html:/app/index.html:ro
+      - ./kvant/vite.config.ts:/app/vite.config.ts:ro
+      # Исключаем node_modules из монтирования
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - kvant-network
+    restart: unless-stopped
+
+  # Nginx (только для production)
+  nginx:
+    image: nginx:alpine
+    container_name: kvant-nginx
+    ports:
+      - "${NGINX_PORT:-80}:80"
+      - "${NGINX_SSL_PORT:-443}:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - kvant-network
+    restart: unless-stopped
+    profiles:
+      - production
+
+  # Redis для кэширования (опционально)
+  redis:
+    image: redis:alpine
+    container_name: kvant-redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - kvant-network
+    restart: unless-stopped
+    profiles:
+      - production
+      - redis
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  kvant-network:
+    driver: bridge

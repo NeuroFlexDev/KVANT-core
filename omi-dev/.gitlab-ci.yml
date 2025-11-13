@@ -1,0 +1,120 @@
+variables:
+  SERVICE_NAME: 'omi-backend'
+  REGISTRY: "cr.yandex/crpkcrghslcmgnlbr5qn"
+  IMAGE: "omi/backend"
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_FORCE_HTTPS: "true"
+
+stages:
+  - build
+  - deploy
+
+default:
+  tags:
+    - script
+    - k8s
+    - dev
+
+build:
+  stage: build
+  image:
+    name: $REGISTRY/tools/kaniko-executor:v1.16.0-debug
+    entrypoint: [""]
+  before_script:
+    - mkdir -p /kaniko/.docker
+    - echo $DOCKER_AUTH_CONFIG | base64 -d > /kaniko/.docker/config.json
+    - |-
+      if [ -z $IMAGE_TAG ] && [ -z $CI_COMMIT_TAG ]; then
+        BRANCH_NAME=$(echo $CI_COMMIT_REF_NAME | sed "s/\//-/g")
+        export IMAGE_TAG=$BRANCH_NAME-$CI_COMMIT_SHORT_SHA
+      else
+        IMAGE_TAG=$CI_COMMIT_TAG
+      fi
+  script:
+    - "echo 'Build IMAGE: ' $REGISTRY/$IMAGE:$IMAGE_TAG"
+    - /kaniko/executor
+      --context $CI_PROJECT_DIR
+      --dockerfile $CI_PROJECT_DIR/Dockerfile
+      --destination $REGISTRY/$IMAGE:$IMAGE_TAG
+  rules:
+    - if: $BUILD == "true"
+      when: manual
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: always
+    - if: $CI_PIPELINE_SOURCE == "push"
+
+deploy:dev:
+  stage: deploy
+  image:
+    name: $REGISTRY/tools/kube-deploy:1.0.0
+    entrypoint: [""]
+  resource_group: dev
+  variables:
+    ENV: dev
+  before_script:
+    - mkdir -p ~/.kube && echo $K8S_CONFIG | base64 -d > ~/.kube/config && chmod 600 ~/.kube/config
+    - |-
+      if [ -z $IMAGE_TAG ] && [ -z $CI_COMMIT_TAG ]; then
+        BRANCH_NAME=$(echo $CI_COMMIT_REF_NAME | sed "s/\//-/g")
+        export IMAGE_TAG=$BRANCH_NAME-$CI_COMMIT_SHORT_SHA
+      else
+        IMAGE_TAG=$CI_COMMIT_TAG
+      fi
+  script:
+    - "echo 'Install IMAGE: ' $REGISTRY/$IMAGE:$IMAGE_TAG"
+    - helm upgrade -i $SERVICE_NAME .ci/chart
+      --namespace $ENV
+      -f .ci/deploy/values.${ENV}.yaml
+      --set image.repository=$REGISTRY/$IMAGE
+      --set image.tag=$IMAGE_TAG
+  after_script:
+    - kubectl -n $ENV rollout status deploy/$SERVICE_NAME
+  rules:
+    - if: $DEPLOY == "true"
+      when: manual
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_COMMIT_BRANCH == 'ci-cd'
+      when: manual
+    - if: $CI_COMMIT_BRANCH == 'dev'
+      when: always
+    - if: $CI_COMMIT_BRANCH == 'main'
+      when: manual
+
+deploy:prod:
+  stage: deploy
+  image:
+    name: $REGISTRY/tools/kube-deploy:1.0.0
+    entrypoint: [""]
+  resource_group: prod
+  variables:
+    ENV: prod
+  before_script:
+    - mkdir -p ~/.kube && echo $K8S_CONFIG | base64 -d > ~/.kube/config && chmod 600 ~/.kube/config
+    - |-
+      if [ -z $IMAGE_TAG ] && [ -z $CI_COMMIT_TAG ]; then
+        BRANCH_NAME=$(echo $CI_COMMIT_REF_NAME | sed "s/\//-/g")
+        export IMAGE_TAG=$BRANCH_NAME-$CI_COMMIT_SHORT_SHA
+      else
+        IMAGE_TAG=$CI_COMMIT_TAG
+      fi
+  script:
+    - "echo 'Install IMAGE: ' $REGISTRY/$IMAGE:$IMAGE_TAG"
+    - helm upgrade -i $SERVICE_NAME .ci/chart
+      --namespace $ENV
+      -f .ci/deploy/values.${ENV}.yaml
+      --set image.repository=$REGISTRY/$IMAGE
+      --set image.tag=$IMAGE_TAG
+  after_script:
+    - kubectl -n $ENV rollout status deploy/$SERVICE_NAME
+  rules:
+    - if: $DEPLOY == "true"
+      when: manual
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_COMMIT_BRANCH == 'main'
+      when: manual
+    - if: $CI_COMMIT_TAG
+      when: always

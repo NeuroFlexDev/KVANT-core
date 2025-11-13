@@ -1,0 +1,3 @@
+[submodule "src/dc_core"]
+	path = src/dc_core
+	url = ../dc_core.git

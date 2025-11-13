@@ -1,0 +1,60 @@
+.container {
+  margin-bottom: 16px;
+  width: 100%;
+  text-align: left;
+}
+
+.inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.block {
+  display: block;
+}
+
+.title {
+  font-family: 'Montserrat';
+  font-size: 20px;
+  font-weight: 600;
+  color: #000000;
+  padding-bottom: 0; /* По умолчанию нет отступа */
+}
+
+.block .title {
+  padding-bottom: 24px; /* Отступ только в block режиме */
+}
+
+.options {
+  display: flex;
+  gap: 24px;
+}
+
+.button {
+  width: 90px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #000000;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  background-color: #f5f5f5;
+}
+
+.button.active {
+  background-color: #3A7F88;
+  color: #fff;
+  border-color: #3A7F88;
+}
+
+.button.active:hover {
+  background-color: #3A7F88;
+}

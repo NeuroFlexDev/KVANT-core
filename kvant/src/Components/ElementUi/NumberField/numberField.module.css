@@ -1,0 +1,45 @@
+.inputContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.inputField {
+    max-width: 110px;
+    min-width: 90px;
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    padding: 10px 18px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inputField:focus {
+    border-color: #3A7F88;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(58, 127, 136, 0.15);
+}
+
+.inputTitle {
+    font-weight: 600;
+    font-size: 20px;
+    outline: none;
+    font-family: 'Montserrat';
+    text-align: left;
+}
+
+/* Убираем стрелочки в WebKit-браузерах (Chrome, Safari) */
+input.inputField[type="number"]::-webkit-inner-spin-button,
+input.inputField[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Убираем стрелочки в Firefox */
+input.inputField[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}

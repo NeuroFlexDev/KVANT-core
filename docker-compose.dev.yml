@@ -1,0 +1,78 @@
+# Docker Compose для разработки
+
+services:
+  # PostgreSQL база данных для разработки
+  postgres:
+    image: postgres:13-alpine
+    container_name: kvant-dev-postgres
+    environment:
+      POSTGRES_DB: kvant_dev
+      POSTGRES_USER: kvant_user
+      POSTGRES_PASSWORD: kvant_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    networks:
+      - kvant-dev-network
+
+  # Бэкенд для разработки
+  backend:
+    build:
+      context: ./omi-dev
+      dockerfile: Dockerfile
+      target: development
+    container_name: kvant-dev-backend
+    environment:
+      - APP_ENV=dev
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=kvant_dev
+      - DB_USER=kvant_user
+      - DB_PASSWORD=kvant_password
+      - DB_SSLMODE=disable
+      - DEBUG=true
+      - SECRET_KEY=dev-secret-key-unsafe-for-production
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./omi-dev/src:/app/src
+      - ./omi-dev/pyproject.toml:/app/pyproject.toml
+    depends_on:
+      - postgres
+    networks:
+      - kvant-dev-network
+    restart: unless-stopped
+
+  # Фронтенд для разработки
+  frontend:
+    build:
+      context: ./kvant
+      dockerfile: Dockerfile
+      target: development
+    container_name: kvant-dev-frontend
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - NODE_ENV=development
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./kvant/src:/app/src
+      - ./kvant/public:/app/public
+      - ./kvant/index.html:/app/index.html
+      - ./kvant/vite.config.ts:/app/vite.config.ts
+      - ./kvant/package.json:/app/package.json
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - kvant-dev-network
+    restart: unless-stopped
+
+volumes:
+  postgres_dev_data:
+    driver: local
+
+networks:
+  kvant-dev-network:
+    driver: bridge

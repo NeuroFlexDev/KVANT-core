@@ -1,0 +1,46 @@
+fullnameOverride: "omi-backend"
+
+replicaCount: 1
+
+image:
+  pullPolicy: Always
+
+registrySecret:
+  - yandex-registry
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: api.omi.dev.script.engineering
+      paths:
+        - path: /
+          service: "omi-backend"
+          port: "80"
+  tls:
+    - secretName: "cert-omi-api"
+      hosts:
+        - api.omi.dev.script.engineering
+env:
+  - name: SENTRY_DSN
+    value: "https://d7a7e660a2ab4d1b95fdaee802629064@o4504374893281280.ingest.sentry.io/4504374900752384"
+  - name: APP_ENV
+    value: "dev"
+  - name: SENTRY_ENV
+    value: "dev"
+#  - name: DEBUG
+#    value: "false"
+  - name: DB_NAME
+    value: "omi_dev"
+
+resources:
+   limits:
+     cpu: 4000m
+     memory: 4096Mi
+   requests:
+     cpu: 200m
+     memory: 256Mi

@@ -1,0 +1,56 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Docker volumes and data
+/postgres_data/
+/redis_data/
+/nginx_logs/
+
+# Backups
+/backups/
+
+# Logs
+*.log
+/logs/
+
+# IDE files
+.vscode/
+.idea/
+.claude/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# SSL certificates (add your real certs to nginx/ssl manually)
+/nginx/ssl/*.pem
+/nginx/ssl/*.key
+/nginx/ssl/*.crt
+
+# Node modules (should be in container only)
+node_modules/
+**/node_modules/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Build outputs
+dist/
+build/
+**/dist/
+**/build/
+
+# Temporary files
+tmp/
+temp/

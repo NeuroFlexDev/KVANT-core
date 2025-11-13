@@ -1,0 +1,31 @@
+.inputFieldClassic {
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    padding: 12px 18px;
+    width: 100%;
+    background-color: #FFFFFF;
+    color: #0f172a;
+    font-weight: 400;
+    outline: none;
+    font-family: 'Montserrat', sans-serif;
+    max-width: 760px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inputFieldClassic:focus {
+    border-color: #3A7F88;
+    box-shadow: 0 0 0 2px rgba(58, 127, 136, 0.15);
+}
+
+/* Убираем стрелочки в WebKit-браузерах (Chrome, Safari) */
+input.inputFieldClassic[type="number"]::-webkit-inner-spin-button,
+input.inputFieldClassic[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Убираем стрелочки в Firefox */
+input.inputFieldClassic[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}

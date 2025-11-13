@@ -1,0 +1,11 @@
+.DS_Store
+
+*.pyc
+*.pyi
+*.pyx
+
+.idea/
+dist/
+tmp/
+
+poetry.lock

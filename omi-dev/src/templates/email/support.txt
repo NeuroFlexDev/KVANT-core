@@ -1,0 +1,7 @@
+Поступило новое обращение от пользователя системы SCRIPT ENGINEERING!
+
+Время обращения: {{ datetime }}
+Email пользователя: {{ email }}
+Тип обращения: {{ statement_type }}
+
+{{ statement_body }}
