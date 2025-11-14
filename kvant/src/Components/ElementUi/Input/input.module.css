@@ -2,13 +2,13 @@
     border-radius: 12px;
     border: 1px solid #d1d5db;
     padding: 12px 18px;
-    width: 100%;
+    width: calc(100% - 40px);
     background-color: #FFFFFF;
     color: #0f172a;
     font-weight: 400;
     outline: none;
     font-family: 'Montserrat', sans-serif;
-    max-width: 760px;
+    max-width: 900px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 

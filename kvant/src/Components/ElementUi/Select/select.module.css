@@ -23,6 +23,7 @@
   background-color: white;
   cursor: pointer;
   transition: border-color 0.2s;
+  border: 1px solid #e2e8f0;
 }
 
 .select:hover {

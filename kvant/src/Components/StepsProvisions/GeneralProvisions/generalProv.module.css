@@ -6,6 +6,7 @@
     gap: 32px;
     padding: 20px 2rem 40px;
     box-sizing: border-box;
+    min-width: 1000px;
 }
 
 .cardsContainer {

@@ -4,7 +4,6 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: center;
     /* height: 100vh; */
     margin-bottom: 100px;
 }
@@ -35,6 +34,43 @@
 .sectionContainer {
     display: flex;
     flex-direction: column;
+}
+
+.techCheckboxRow {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.finalCorpusQuestion {
+    width: calc(100% - 40px);
+    border: 1px solid #3A7F88;
+    border-radius: 5px;
+    display: flex;
+    gap: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.leftPart {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.rightPart {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-align: left;
+}
+
+@media (max-width: 1100px) {
+    .finalCorpusQuestion {
+       display: flex;
+       flex-direction: column;
+    }
 }
 
 @media (max-width: 768px) {
