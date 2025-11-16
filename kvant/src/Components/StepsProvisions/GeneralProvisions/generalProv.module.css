@@ -6,7 +6,8 @@
     gap: 32px;
     padding: 20px 2rem 40px;
     box-sizing: border-box;
-    min-width: 1000px;
+    min-width: 900px;
+    max-width: 900px;
 }
 
 .cardsContainer {
@@ -15,7 +16,7 @@
     gap: 24px;
 }
 
-.inputContainer { 
+.inputContainer {
     width: 100%;
     padding-bottom: 30px;
 }
@@ -119,6 +120,13 @@
     margin-top: 4px;
 }
 
+@media (max-width: 1024px) {
+    .container {
+        min-width: 480px;
+        max-width: 480px;
+    }
+}
+
 @media (max-width: 725px) {
     .container {
         display: flex;
@@ -128,6 +136,23 @@
         gap: 30px;
         padding: 20px 1.5rem 32px;
         margin: 0 auto;
+    }
+    .cardsContainer {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 425px) {
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        gap: 30px;
+        padding: 20px 0.5rem 32px;
+        margin: 0 auto;
+        min-width: 280px;
+        max-width: 280px;
     }
     .cardsContainer {
         grid-template-columns: 1fr;

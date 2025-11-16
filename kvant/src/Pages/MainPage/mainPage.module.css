@@ -7,6 +7,7 @@
   background-color: #f8fafc;
   box-sizing: border-box;
   font-family: 'Montserrat', sans-serif;
+  margin-bottom: 50px;
 }
 
 .header {
@@ -93,5 +94,6 @@
 @media (max-width: 768px) {
   .container {
     padding: 16px;
+    margin-bottom: 100px;
   }
 }
